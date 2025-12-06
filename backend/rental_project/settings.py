@@ -1,6 +1,7 @@
 ﻿import os
 from pathlib import Path
 
+
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 SECRET_KEY = os.environ.get('DJANGO_SECRET_KEY', 'django-insecure-change-this-in-production')
@@ -46,6 +47,7 @@ TEMPLATES = [
 ]
 
 # ВАЖНО: Используем переменные окружения от Amvera
+# settings.py
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
@@ -54,6 +56,9 @@ DATABASES = {
         'PASSWORD': os.environ.get('POSTGRES_PASSWORD', '071103Zxc!'),
         'HOST': os.environ.get('POSTGRES_HOST', 'localhost'),
         'PORT': os.environ.get('POSTGRES_PORT', '5432'),
+        'OPTIONS': {
+            'connect_timeout': 30,  # Увеличиваем таймаут до 30 секунд
+        }
     }
 }
 
