@@ -1,0 +1,12 @@
+# .amvera.yml в корне
+runtime: docker
+dockerfile: Dockerfile  # теперь в корне!
+port: 8000
+
+env:
+  - name: DJANGO_SETTINGS_MODULE
+    value: rental_project.settings.production
+  - name: DEBUG
+    value: "False"
+  - name: PYTHONUNBUFFERED
+    value: "1"
