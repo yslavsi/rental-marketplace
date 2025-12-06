@@ -11,6 +11,8 @@ def user_logout(request):
     return redirect('home')
 
 urlpatterns = [
+    path('', lambda request: HttpResponse('<h1>Rental Marketplace работает! 🎉</h1>'), name='home'),
+    path('health/', health_check, name='health_check'),
     path('', views.home, name='home'),
     path('listing/create/', views.create_listing, name='create_listing'),
     path('dashboard/', views.dashboard, name='dashboard'),

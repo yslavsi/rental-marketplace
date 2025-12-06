@@ -1,14 +1,10 @@
 FROM python:3.11-slim
-
 WORKDIR /app
-
 COPY backend/requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
-
 COPY backend/ .
-
+COPY entrypoint.sh .
 RUN python manage.py collectstatic --noinput
-
+RUN chmod +x /app/entrypoint.sh
 EXPOSE 8000
-
-CMD gunicorn --bind 0.0.0.0:8000 rental_project.wsgi:application
+ENTRYPOINT ["/app/entrypoint.sh"]
