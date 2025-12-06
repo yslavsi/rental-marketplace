@@ -1,10 +1,10 @@
-# .amvera.yml или amvera.yaml
+# rental-marketplace/.amvera.yml
 name: rental-marketplace
-runtime: docker  # ← ВАЖНО: docker, не python!
+runtime: docker
 
 build:
   dockerfile: ./backend/Dockerfile
-  context: ./backend
+  # УБИРАЕМ context: ./backend - Amvera не поддерживает!
 
 ports:
   - port: 8000
@@ -17,8 +17,3 @@ env:
     value: "False"
   - name: PYTHONUNBUFFERED
     value: "1"
-
-healthcheck:
-  path: /health/
-  initial_delay: 30
-  period: 10
