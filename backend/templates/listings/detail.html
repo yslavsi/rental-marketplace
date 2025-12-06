@@ -1,0 +1,123 @@
+{% extends 'base.html' %}
+{% load leaflet_tags %}
+
+{% block title %}{{ listing.title }}{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-md-8">
+            <h1 class="mb-4">{{ listing.title }}</h1>
+            
+            <!-- Галерея -->
+            {% if listing.images %}
+                <div id="imageCarousel" class="carousel slide mb-4" data-bs-ride="carousel">
+                    <div class="carousel-inner">
+                        {% for image in listing.images %}
+                            <div class="carousel-item {% if forloop.first %}active{% endif %}">
+                                <img src="{{ image.url }}" class="d-block w-100" style="height: 400px; object-fit: cover;" alt="{{ listing.title }}">
+                            </div>
+                        {% endfor %}
+                    </div>
+                    <button class="carousel-control-prev" type="button" data-bs-target="#imageCarousel" data-bs-slide="prev">
+                        <span class="carousel-control-prev-icon"></span>
+                    </button>
+                    <button class="carousel-control-next" type="button" data-bs-target="#imageCarousel" data-bs-slide="next">
+                        <span class="carousel-control-next-icon"></span>
+                    </button>
+                </div>
+            {% endif %}
+
+            <div class="row mb-4">
+                <div class="col-md-6">
+                    <h5><i class="bi bi-tag text-primary"></i> {{ listing.category }}</h5>
+                </div>
+                <div class="col-md-6 text-end">
+                    <h3 class="text-success">{{ listing.get_price_display }}</h3>
+                </div>
+            </div>
+
+            <div class="mb-4">
+                <h5>Описание</h5>
+                <p>{{ listing.description }}</p>
+            </div>
+
+            <!-- Форма бронирования -->
+            <div class="card shadow-sm">
+                <div class="card-header bg-success text-white">
+                    <h5>Забронировать</h5>
+                </div>
+                <div class="card-body">
+                    <form method="post">
+                        {% csrf_token %}
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Дата начала</label>
+                                {{ form.start_date }}
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Дата окончания</label>
+                                {{ form.end_date }}
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-8">
+                                <h5>Итого: <span id="total-price" class="text-success fw-bold">Расчёт...</span></h5>
+                            </div>
+                            <div class="col-md-4">
+                                <button type="submit" class="btn btn-success btn-lg w-100">Забронировать</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-4">
+            <!-- Карта -->
+            {% leaflet_map "listing_map" callback="window.initMap" %}
+            
+            <!-- Владелец -->
+            <div class="card mt-4">
+                <div class="card-header">
+                    <h6>Владелец</h6>
+                </div>
+                <div class="card-body">
+                    <p><strong>{{ listing.owner.username }}</strong></p>
+                    <small class="text-muted">Дата: {{ listing.created_at|date:"d.m.Y" }}</small>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+function initMap(map, options) {
+    map.setView([{{ listing.lat|default:55.7558 }}, {{ listing.lng|default:37.6176 }}], 13);
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map);
+    L.marker(map.getCenter()).addTo(map)
+        .bindPopup('{{ listing.title }}');
+}
+</script>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const startDate = document.querySelector('input[name="start_date"]');
+    const endDate = document.querySelector('input[name="end_date"]');
+    const totalPrice = document.getElementById('total-price');
+    
+    function calculatePrice() {
+        const start = new Date(startDate.value);
+        const end = new Date(endDate.value);
+        if (start && end && end > start) {
+            const days = (end - start) / (1000 * 60 * 60 * 24);
+            const pricePerDay = {{ listing.price_per_unit }};
+            totalPrice.textContent = (days * pricePerDay).toLocaleString() + ' ₽';
+        }
+    }
+    
+    startDate.addEventListener('change', calculatePrice);
+    endDate.addEventListener('change', calculatePrice);
+});
+</script>
+{% endblock %}

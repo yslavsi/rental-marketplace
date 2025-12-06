@@ -1,0 +1,46 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="jumbotron bg-light p-5 rounded">
+    <h1 class="display-4">Аренда вещей и услуг</h1>
+    <p class="lead">Велосипеды, инструменты, квартиры, услуги - всё для аренды!</p>
+</div>
+
+<div class="row">
+    <div class="col-md-3">
+        <h5>Категории</h5>
+        <div class="list-group">
+            {% for category in categories %}
+                <a href="#" class="list-group-item list-group-item-action">{{ category.name }}</a>
+            {% empty %}
+                <span class="list-group-item">Категории появятся после настройки</span>
+            {% endfor %}
+        </div>
+    </div>
+    
+    <div class="col-md-9">
+        <h3>Объявления</h3>
+        {% if listings %}
+            <div class="row">
+                {% for listing in listings %}
+                    <div class="col-md-4 mb-4">
+                        <div class="card h-100">
+                            <div class="card-body">
+                                <h5 class="card-title">{{ listing.title|default:"Новое объявление" }}</h5>
+                                <p class="card-text">{{ listing.description|truncatewords:15|default:"Описание" }}</p>
+                                <p class="text-primary fw-bold">{{ listing.get_price_display|default:"Цена" }}</p>
+                                <a href="#" class="btn btn-primary">Подробнее</a>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        {% else %}
+            <div class="alert alert-info">
+                <h5>Объявлений пока нет</h5>
+                <p>Зайдите в <a href="/admin/">админку</a> и создайте первые категории и объявления!</p>
+            </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

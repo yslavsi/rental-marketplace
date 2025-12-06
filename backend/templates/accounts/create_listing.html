@@ -1,0 +1,49 @@
+{% extends 'base.html' %}
+
+{% block title %}Разместить объявление{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-8">
+        <h2 class="mb-4">Разместить объявление</h2>
+        
+        <form method="post">
+            {% csrf_token %}
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <label class="form-label">Заголовок</label>
+                    {{ form.title }}
+                </div>
+                <div class="col-md-6 mb-3">
+                    <label class="form-label">Категория</label>
+                    {{ form.category }}
+                </div>
+            </div>
+            
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <label class="form-label">Цена за единицу</label>
+                    {{ form.price_per_unit }}
+                </div>
+                <div class="col-md-6 mb-3">
+                    <label class="form-label">Единица</label>
+                    {{ form.price_unit }}
+                </div>
+            </div>
+            
+            <div class="mb-3">
+                <label class="form-label">Локация</label>
+                {{ form.location }}
+            </div>
+            
+            <div class="mb-3">
+                <label class="form-label">Описание</label>
+                {{ form.description }}
+            </div>
+            
+            <button type="submit" class="btn btn-primary btn-lg">Разместить</button>
+            <a href="{% url 'dashboard' %}" class="btn btn-secondary btn-lg ms-2">Назад</a>
+        </form>
+    </div>
+</div>
+{% endblock %}

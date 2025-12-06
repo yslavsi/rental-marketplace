@@ -1,0 +1,61 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-4">
+        <h4>Мои объявления ({{ user_listings.count }})</h4>
+        {% for listing in user_listings %}
+            <div class="card mb-2">
+                <div class="card-body">
+                    <h6>{{ listing.title }}</h6>
+                    <small>{{ listing.get_price_display }}</small>
+                </div>
+            </div>
+        {% empty %}
+            <p>У вас нет объявлений</p>
+        {% endfor %}
+    </div>
+    
+    <div class="col-md-4">
+        <h4>Ожидающие брони ({{ pending_bookings.count }})</h4>
+        {% for booking in pending_bookings %}
+            <div class="card mb-2">
+                <div class="card-body">
+                    <h6>{{ booking.listing.title }}</h6>
+                    <small>{{ booking.start_date }} - {{ booking.end_date }}</small>
+                    <div class="mt-2">
+                        <form method="post" action="{% url 'manage_booking' booking.pk %}" class="d-inline">
+                            {% csrf_token %}
+                            <input type="hidden" name="action" value="confirm">
+                            <button class="btn btn-sm btn-success">Подтвердить</button>
+                        </form>
+                        <form method="post" action="{% url 'manage_booking' booking.pk %}" class="d-inline">
+                            {% csrf_token %}
+                            <input type="hidden" name="action" value="reject">
+                            <button class="btn btn-sm btn-danger">Отклонить</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        {% empty %}
+            <p>Нет ожидающих броней</p>
+        {% endfor %}
+    </div>
+    
+    <div class="col-md-4">
+        <h4>Мои аренды</h4>
+        {% for rental in user_rentals %}
+            <div class="card mb-2">
+                <div class="card-body">
+                    <h6>{{ rental.listing.title }}</h6>
+                    <small>Статус: {{ rental.get_status_display }}</small>
+                </div>
+            </div>
+        {% empty %}
+            <p>Нет аренд</p>
+        {% endfor %}
+    </div>
+</div>
+
+<a href="{% url 'create_listing' %}" class="btn btn-primary mt-3">Разместить объявление</a>
+{% endblock %}
