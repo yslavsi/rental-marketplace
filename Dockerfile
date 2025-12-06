@@ -1,21 +1,16 @@
-# Dockerfile в корне (с правильными путями)
 FROM python:3.11-slim
 
+# Сразу переходим в backend
 WORKDIR /app
 
-# Копируем requirements.txt из backend
+# Сначала копируем только requirements.txt
 COPY backend/requirements.txt .
 
 RUN pip install --no-cache-dir -r requirements.txt
 
-# Копируем весь проект Django
+# Затем весь проект
 COPY backend/ .
 
-# Создаем пользователя
-RUN useradd -m -u 1000 django && chown -R django:django /app
-USER django
-
-# Собираем статику
 RUN python manage.py collectstatic --noinput
 
 EXPOSE 8000
