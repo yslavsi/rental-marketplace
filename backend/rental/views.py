@@ -102,3 +102,6 @@ def user_logout(request):
     """Выход из аккаунта"""
     logout(request)
     return redirect('home')
+
+def health_check(request):
+    return HttpResponse('OK', status=200)

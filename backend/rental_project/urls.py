@@ -5,6 +5,8 @@ from django.conf.urls.static import static
 from django.contrib.auth import views as auth_views
 
 urlpatterns = [
+    path('health/', health_check, name='health_check'),
+    path('', views.home, name='home'),
     path('admin/', admin.site.urls),
     path('', include('rental.urls')),
     path('accounts/', include('django.contrib.auth.urls')),  # ✅ LOGIN + LOGOUT!
