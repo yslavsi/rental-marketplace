@@ -3,7 +3,7 @@ from pathlib import Path
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-SECRET_KEY = os.environ.get('DJANGO_SECRET_KEY', 'django-insecure-dev-key-change-me')
+SECRET_KEY = os.environ.get('DJANGO_SECRET_KEY', 'django-insecure-change-this-in-production')
 DEBUG = os.environ.get('DEBUG', 'False') == 'True'
 ALLOWED_HOSTS = ['rentalprod.amvera.app', '.amvera.app', 'localhost', '127.0.0.1']
 
@@ -45,16 +45,26 @@ TEMPLATES = [
     },
 ]
 
+# ВАЖНО: Используем переменные окружения от Amvera
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
         'NAME': os.environ.get('POSTGRES_DB', 'rental_db'),
         'USER': os.environ.get('POSTGRES_USER', 'rental_user'),
-        'PASSWORD': os.environ.get('071103Zxc!', ''),
+        'PASSWORD': os.environ.get('POSTGRES_PASSWORD', '071103Zxc!'),
         'HOST': os.environ.get('POSTGRES_HOST', 'localhost'),
         'PORT': os.environ.get('POSTGRES_PORT', '5432'),
     }
 }
+
+# Если переменных окружения нет, используем SQLite
+if not os.environ.get('POSTGRES_HOST'):
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': BASE_DIR / 'db.sqlite3',
+        }
+    }
 
 AUTH_PASSWORD_VALIDATORS = [
     {'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator'},
