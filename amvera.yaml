@@ -1,0 +1,24 @@
+# .amvera.yml или amvera.yaml
+name: rental-marketplace
+runtime: docker  # ← ВАЖНО: docker, не python!
+
+build:
+  dockerfile: ./backend/Dockerfile
+  context: ./backend
+
+ports:
+  - port: 8000
+    protocol: http
+
+env:
+  - name: DJANGO_SETTINGS_MODULE
+    value: rental_project.settings.production
+  - name: DEBUG
+    value: "False"
+  - name: PYTHONUNBUFFERED
+    value: "1"
+
+healthcheck:
+  path: /health/
+  initial_delay: 30
+  period: 10
