@@ -1,16 +1,10 @@
-.git
-.gitignore
+# backend/.dockerignore
 __pycache__/
 *.pyc
 *.pyo
 *.pyd
-venv/
 .env
 *.sqlite3
 *.log
 media/
 static/
-README.md
-tests/
-.coverage
-htmlcov/
