@@ -1,10 +1,23 @@
 FROM python:3.11-slim
+
+# Устанавливаем системные зависимости
+RUN apt-get update && apt-get install -y \
+    gcc \
+    python3-dev \
+    && rm -rf /var/lib/apt/lists/*
+
+# Рабочая директория
 WORKDIR /app
-COPY backend/requirements.txt .
+
+# Копируем зависимости
+COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
-COPY backend/ .
-COPY entrypoint.sh .
-RUN python manage.py collectstatic --noinput
-RUN chmod +x /app/entrypoint.sh
-EXPOSE 8000
-ENTRYPOINT ["/app/entrypoint.sh"]
+
+# Копируем весь проект
+COPY . .
+
+# Делаем entrypoint исполняемым
+RUN chmod +x entrypoint.sh
+
+# Запускаем приложение
+CMD ["./entrypoint.sh"]

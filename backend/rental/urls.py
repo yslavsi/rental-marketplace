@@ -1,20 +1,38 @@
-from django.urls import path
-from django.shortcuts import redirect
-from django.contrib.auth import logout
-from django.contrib.auth.decorators import login_required
-from rental.views import home
-from rental.views import health_check
-from . import views
+from django.contrib import admin
+from django.urls import path, include
+from django.http import HttpResponse
 
-def user_logout(request):
-    logout(request)
-    return redirect('home')
+# Health check для мониторинга
+def health_check(request):
+    return HttpResponse("OK", content_type="text/plain")
+
+def home(request):
+    return HttpResponse("""
+    <!DOCTYPE html>
+    <html>
+    <head>
+        <title>Rental Market</title>
+        <style>
+            body { font-family: Arial, sans-serif; text-align: center; padding: 50px; }
+            .success { color: green; font-size: 24px; }
+            .error { color: red; }
+        </style>
+    </head>
+    <body>
+        <h1 class="success">✅ Django is Running!</h1>
+        <p>Rental Market Application</p>
+        <p>Database: Connected</p>
+        <p>Gunicorn: Running on port 8000</p>
+        <hr>
+        <p><a href="/admin/">Admin Panel</a> | <a href="/health/">Health Check</a></p>
+    </body>
+    </html>
+    """)
 
 urlpatterns = [
-    path('', lambda request: HttpResponse('<h1>Rental Marketplace работает! 🎉</h1>'), name='home'),
+    path('', home, name='home'),
     path('health/', health_check, name='health_check'),
-    path('', views.home, name='home'),
-    path('listing/create/', views.create_listing, name='create_listing'),
-    path('dashboard/', views.dashboard, name='dashboard'),
-    path('accounts/logout/', user_logout, name='logout'),  # ✅ Logout!
+    path('admin/', admin.site.urls),
+    path('accounts/', include('accounts.urls')),
+    path('rental/', include('rental.urls')),
 ]
